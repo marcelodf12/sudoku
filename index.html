@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <link rel="stylesheet" href="css/bootstrap.css">
+        <link rel="stylesheet" href="css/main.css">
+
+        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+        <script src="js/sudoku.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <!-- Header -->
+                    <table>
+                        <tr>
+                            <td><IMG SRC="images/insignia.jpg" WIDTH=90 HEIGHT=100></td>
+                            <td>
+                                <h1>&nbsp&nbsp&nbspSudoku Grupo 10</h1>
+                                <h2>&nbsp&nbsp&nbspInteligencia Artificial</h2><br>
+                            </td>
+                        </tr>
+                    </table>
+                    <!-- End-Header -->
+                </div>
+            </div>
+            <div class="row">			
+                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                    <!-- Menu-Lateral	-->
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Parametros</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="col-lg-10">
+                                <div class="form-group">
+                                    <label for="inputNombre" class="col-lg-2 control-label">N</label><br>
+                                    <input class="form-control" id="inputN" placeholder="Tamaño del Tablero" type="text" name="nombre">
+                                </div>
+                            </div>
+                            <div class="col-lg-10">
+                                <div class="form-group">
+                                    <label for="inputNombre" class="col-lg-2 control-label">M</label><br>
+                                    <input class="form-control" id="inputM" placeholder="Nro. Valores Iniciales" type="text" name="nombre">
+                                </div>
+                            </div>
+                            <div class="col-lg-10">
+                                <div class="form-group">
+                                    <button class="btn btn-primary" onClick="nuevoJuego()">Generar Juego</button>
+                                </div>
+                            </div>
+                            <div class="col-lg-10">
+                                <div class="form-group">
+                                    <button class="btn btn-default" onClick="resolverBackTrack()">Backtracking</button>
+                                </div>
+                            </div>
+                            <div class="col-lg-10">
+                                <div class="form-group">
+                                    <button class="btn btn-default" onClick="cancelar()">Las Vegas</button>
+                                </div>
+                            </div>
+                            <div class="col-lg-10">
+                                <div class="form-group">
+                                    <button class="btn btn-default" onClick="cancelar()">Heuristica</button>
+                                </div>
+                            </div>
+                            <div class="col-lg-10">
+                                <div class="form-group">
+                                    <button class="btn btn-success" onClick="reiniciar()">Reiniciar</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End-Menu-Lateral	-->
+                    </div>
+                </div>
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                    <!-- Contenido	-->
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Juego</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div id="juego">
+                                
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                    <!-- End-Contenido	-->
+                </div>
+                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Resultados</h3>
+                        </div>
+                        <div class="panel-body">
+                            Tiempo en milisegundos<br>
+                            <input class="form-control" name="tiempo">
+                            Nro de Soluciones<br>
+                            <input class="form-control" name="soluciones">
+                            Nro de Nodos Visitados<br>
+                            <input class="form-control" name="nodos">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <!-- Pie	-->
+
+                    <!-- End-Pie	-->
+                </div>
+            </div>
+        </div>
+
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.1.min.js"><\/script>')</script>
+
+        <script src="js/vendor/bootstrap.js"></script>
+        <script src="js/main.js"></script>
+    </body>
+</html>
