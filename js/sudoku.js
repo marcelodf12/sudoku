@@ -75,7 +75,6 @@ function reiniciar() {
 }
 function renderizar(matriz) {
     // Crea un elemento <table> y un elemento <tbody>
-    console.log(document);
     var Div = document.getElementById("juego");
     Div.innerHTML = "";
     var tabla = document.createElement("table");
@@ -98,7 +97,7 @@ function renderizar(matriz) {
         // agrega la hilera al final de la tabla (al final del elemento tblbody)
         tblBody.appendChild(hilera);
     }
-    console.log("salio");
+    console.log("Render");
 }
 
 function borrarValores(max) {
@@ -107,6 +106,8 @@ function borrarValores(max) {
         max = 10;
         document.getElementById("inputM").value = 10;
     }
+    matrizInicial[n-1][n-1] = 0; // eliminar siempre la ultima celda
+    max--;
     var i = 0;
     while (i < n * n - max) {
         var x = Math.round(Math.random() * (n - 1));
@@ -169,8 +170,8 @@ function nextEmpty(row, matriz) {
     //retorna la siguiente celda vacia, si no la hay, retorna null
     for (var i = row; i < n; i++) {
         for (var j = 0; j < n; j++) {
-            if (matriz[i][j]===0) {
-                return [i,j];
+            if (matriz[i][j] === 0) {
+                return [i, j];
             }
         }
     }
@@ -181,22 +182,17 @@ function resolverBackTrack() {
     backtrackSolutions = 0;
     auxMat = [];
     vueltas = 0;
-    var startT = new Date(); 
+    var startT = new Date();
     backTrack(0);
-    var endT = new Date(); 
-    console.log("Tiempo = "+ (endT-startT).toString())
+    var endT = new Date();
+    renderizar(matrizInicial);
+    console.log(auxMat);
+    document.getElementById("tiempo").value = (endT - startT).toString();
+    document.getElementById("soluciones").value = backtrackSolutions;
+    document.getElementById("nodos").value = cantidadNodos;
 }
 function backTrack(filaAct)
 {
-    //console.log(vueltas++);
-    //si todas las celdas estan llenas es solucion
-    if (nextEmpty(0, matrizInicial) == null) {
-        console.log(matrizInicial);
-        backtrackSolutions++;
-        auxMat.push(matrizInicial);
-        renderizar(matrizInicial);
-        return;
-    }
     var fila, col, number;
     for (fila = filaAct; fila < n; fila++) {
         for (col = 0; col < n; col++) {
@@ -207,7 +203,13 @@ function backTrack(filaAct)
                     if (isValido(number, fila, col)) {
                         matrizInicial[fila][col] = number;
                         cantidadNodos++;
-                        backTrack(fila);
+                        if (fila === n - 1 && col === n - 1) {
+                            //estoy en la ultima celda y es solucion
+                            backtrackSolutions++;
+                            auxMat.push(matrizInicial);
+                        } else {
+                            backTrack(fila);
+                        }
                         //borramos el valor para seguir buscando soluciones
                         matrizInicial[fila][col] = 0;
                     }
