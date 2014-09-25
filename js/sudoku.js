@@ -2,6 +2,8 @@ var cantidadNodos = 0;
 var backtrackSolutions = 0;
 var auxMat;
 var vueltas;
+var primeraSol = true;
+var barProg;
 var matrizInicial = [[2, 9, 3, 6, 7, 5, 1, 8, 4],
     [1, 8, 6, 2, 9, 4, 5, 3, 7],
     [4, 5, 7, 8, 1, 3, 6, 2, 9],
@@ -90,6 +92,8 @@ function renderizar(matriz) {
             var celda = document.createElement("td");
             if (matriz[i][j] > 0) {
                 celda.innerHTML = matrizInicial[i][j].toString();
+            } else {
+                celda.innerHTML = "&nbsp&nbsp";
             }
             hilera.appendChild(celda);
         }
@@ -106,7 +110,7 @@ function borrarValores(max) {
         max = 10;
         document.getElementById("inputM").value = 10;
     }
-    matrizInicial[n-1][n-1] = 0; // eliminar siempre la ultima celda
+    matrizInicial[n - 1][n - 1] = 0; // eliminar siempre la ultima celda
     max--;
     var i = 0;
     while (i < n * n - max) {
@@ -178,6 +182,9 @@ function nextEmpty(row, matriz) {
     return null;
 }
 function resolverBackTrack() {
+    barProg = document.getElementById("barProg");
+    barProg.setAttribute("style", "width: 0%");
+    primeraSol = true;
     cantidadNodos = 0;
     backtrackSolutions = 0;
     auxMat = [];
@@ -185,7 +192,6 @@ function resolverBackTrack() {
     var startT = new Date();
     backTrack(0);
     var endT = new Date();
-    renderizar(matrizInicial);
     console.log(auxMat);
     document.getElementById("tiempo").value = (endT - startT).toString();
     document.getElementById("soluciones").value = backtrackSolutions;
@@ -195,6 +201,7 @@ function backTrack(filaAct)
 {
     var fila, col, number;
     for (fila = filaAct; fila < n; fila++) {
+        barProg.setAttribute("style", "width: " + Math.round(fila/n*100).toString() + "%");
         for (col = 0; col < n; col++) {
             //si la celda no esta vacia, ir a otra
             if (matrizInicial[fila][col] === 0) {
@@ -206,7 +213,8 @@ function backTrack(filaAct)
                         if (fila === n - 1 && col === n - 1) {
                             //estoy en la ultima celda y es solucion
                             backtrackSolutions++;
-                            auxMat.push(matrizInicial);
+                            aux = clonar(matrizInicial);//Se debe clonar uno a uno los valores porque la copia de listas se lanzan en hilo y altera el resultado
+                            auxMat.push(aux);
                         } else {
                             backTrack(fila);
                         }
@@ -221,3 +229,17 @@ function backTrack(filaAct)
     return;
 }
 
+function clonar(m) {
+    a = [];
+    for (fila = 0; fila < n; fila++) {
+        a[fila] = [];
+        for (col = 0; col < n; col++) {
+            a[fila][col] = m[fila][col]
+        }
+    }
+    if(primeraSol){
+        primeraSol = false;
+        renderizar(a);
+    }
+    return a;
+}
