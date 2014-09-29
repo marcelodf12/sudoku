@@ -4,6 +4,7 @@ var auxMat;
 var vueltas;
 var primeraSol = true;
 var barProg;
+var opciones = [];
 var matrizInicial = [[2, 9, 3, 6, 7, 5, 1, 8, 4],
     [1, 8, 6, 2, 9, 4, 5, 3, 7],
     [4, 5, 7, 8, 1, 3, 6, 2, 9],
@@ -204,6 +205,15 @@ function resolver(algoritmo) {
             console.log("FRACASO");
         }
         ;
+    } else if (algoritmo === 3) {
+        iniciarOpciones();
+        console.log("Algoritmo con Heuristica");
+        if (heuristica()) {
+            console.log("EXITO");
+        } else {
+            console.log("FRACASO");
+        }
+        ;
     }
     console.log("FIN");
     var endT = new Date();
@@ -243,10 +253,8 @@ function vegas(filaAct) {
             for (var col = 0; col < n; col++) {
                 if (matrizInicial[fila][col] === 0) {
                     aleatorios = randomSinRepetir();
-                    console.log(aleatorios);
                     for (var c = 0; c < 9; c++) {
-                        number = aleatorios[c];
-                        console.log(number);
+                        var number = aleatorios[c];
                         if (isValido(number, fila, col)) {
                             matrizInicial[fila][col] = number;
                             cantidadNodos++;
@@ -292,7 +300,62 @@ function backTrack(filaAct) {
     }
 
 }
-
+function heuristica() {
+    if (completo(matrizInicial)) {
+        renderizar(clonar(matrizInicial));
+        return true;
+    } else {
+        var menor = menosOpciones();
+        var f = menor[0];
+        var c = menor[1];
+        for (var x = 1; x < 10; x++) {
+            if (isValido(x, f, c)) {
+                matrizInicial[f][c] = x;
+                console.table(matrizInicial);
+                iniciarOpciones();
+                cantidadNodos++;
+                if (heuristica()) {
+                    return true;
+                } else {
+                    matrizInicial[f][c] = 0;
+                    iniciarOpciones();
+                }
+            }
+        }
+        return false;
+    }
+}
+function iniciarOpciones() {
+    for (var fila = 0; fila < n; fila++) {
+        opciones[fila] = [];
+        for (var col = 0; col < n; col++) {
+            if (matrizInicial[fila][col] === 0) {
+                opciones[fila][col] = 0;
+                for (var c = 1; c < 10; c++) {
+                    if (isValido(c, fila, col)) {
+                        opciones[fila][col]++;
+                    }
+                }
+            } else {
+                opciones[fila][col] = 10;
+            }
+        }
+    }
+}
+function menosOpciones() {
+    var cm = 0;
+    var fm = 0;
+    for (var fila = 0; fila < n; fila++) {
+        for (var col = 0; col < n; col++) {
+            if (opciones[fm][cm] > opciones[fila][col]) {
+                cm = col;
+                fm = fila;
+            }
+        }
+    }
+    menor = [fm, cm];
+    return menor;
+}
 function clonar(m) {
     a = [];
     for (fila = 0; fila < n; fila++) {
