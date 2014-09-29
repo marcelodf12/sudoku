@@ -229,7 +229,7 @@ function randomSinRepetir() {
         while (probados[number - 1]) {
             number = aleatorioEntre(1, 9);
         }
-        probados[number - 1]=true;
+        probados[number - 1] = true;
         numeros.push(number);
     }
     return numeros;
@@ -237,15 +237,16 @@ function randomSinRepetir() {
 function vegas(filaAct) {
     if (completo(matrizInicial)) {
         renderizar(clonar(matrizInicial));
-        console.table(matrizInicial);
         return true;
     } else {
         for (var fila = filaAct; fila < n; fila++) {
             for (var col = 0; col < n; col++) {
                 if (matrizInicial[fila][col] === 0) {
-                    aleatorios=randomSinRepetir();
+                    aleatorios = randomSinRepetir();
+                    console.log(aleatorios);
                     for (var c = 0; c < 9; c++) {
-                        number=aleatorios[c];
+                        number = aleatorios[c];
+                        console.log(number);
                         if (isValido(number, fila, col)) {
                             matrizInicial[fila][col] = number;
                             cantidadNodos++;
@@ -262,7 +263,6 @@ function vegas(filaAct) {
         }
         return false;
     }
-
 }
 function backTrack(filaAct) {
     if (completo(matrizInicial)) {
