@@ -1,5 +1,5 @@
 var cantidadNodos = 0;
-var backtrackSolutions = 0;
+var solutions = 0;
 var auxMat;
 var vueltas;
 var primeraSol = true;
@@ -69,10 +69,12 @@ function nuevoJuego() {
     console.log(M);
     borrarValores(M);
     renderizar(matrizInicial);
-    matrizRescatada = matrizInicial;
+    matrizRescatada = clonar(matrizInicial);
 }
 function reiniciar() {
-    matrizInicial = matrizRescatada;
+    console.table(matrizInicial);
+    console.table(matrizRescatada);
+    matrizInicial = clonar(matrizRescatada);
     renderizar(matrizInicial);
 }
 function renderizar(matriz) {
@@ -103,15 +105,15 @@ function renderizar(matriz) {
     }
     console.log("Render");
 }
-
+function aleatorioEntre(MIN, MAX) {
+    return Math.floor(Math.random() * (MAX - MIN + 1)) + MIN;
+}
 function borrarValores(max) {
     if (max < 10) {
         alert("El numero minimo es 10");
         max = 10;
         document.getElementById("inputM").value = 10;
     }
-    matrizInicial[n - 1][n - 1] = 0; // eliminar siempre la ultima celda
-    max--;
     var i = 0;
     while (i < n * n - max) {
         var x = Math.round(Math.random() * (n - 1));
@@ -181,52 +183,114 @@ function nextEmpty(row, matriz) {
     }
     return null;
 }
-function resolverBackTrack() {
-    barProg = document.getElementById("barProg");
-    barProg.setAttribute("style", "width: 0%");
-    primeraSol = true;
+function resolver(algoritmo) {
     cantidadNodos = 0;
-    backtrackSolutions = 0;
     auxMat = [];
     vueltas = 0;
     var startT = new Date();
-    backTrack(0);
+    if (algoritmo === 1) {
+        console.log("Algoritmo Bactraking");
+        if (backTrack(0)) {
+            console.log("EXITO");
+        } else {
+            console.log("FRACASO");
+        }
+        ;
+    } else if (algoritmo === 2) {
+        console.log("Algoritmo de las Vegas");
+        if (vegas(0)) {
+            console.log("EXITO");
+        } else {
+            console.log("FRACASO");
+        }
+        ;
+    }
+    console.log("FIN");
     var endT = new Date();
     console.log(auxMat);
     document.getElementById("tiempo").value = (endT - startT).toString();
-    document.getElementById("soluciones").value = backtrackSolutions;
     document.getElementById("nodos").value = cantidadNodos;
 }
-function backTrack(filaAct)
-{
-    var fila, col, number;
-    for (fila = filaAct; fila < n; fila++) {
-        barProg.setAttribute("style", "width: " + Math.round(fila/n*100).toString() + "%");
-        for (col = 0; col < n; col++) {
-            //si la celda no esta vacia, ir a otra
-            if (matrizInicial[fila][col] === 0) {
-                for (number = 1; number <= 9; number++) {
-                    //si el numero no es valido, next
-                    if (isValido(number, fila, col)) {
-                        matrizInicial[fila][col] = number;
-                        cantidadNodos++;
-                        if (fila === n - 1 && col === n - 1) {
-                            //estoy en la ultima celda y es solucion
-                            backtrackSolutions++;
-                            aux = clonar(matrizInicial);//Se debe clonar uno a uno los valores porque la copia de listas se lanzan en hilo y altera el resultado
-                            auxMat.push(aux);
-                        } else {
-                            backTrack(fila);
-                        }
-                        //borramos el valor para seguir buscando soluciones
-                        matrizInicial[fila][col] = 0;
-                    }
-                }
-                return;
+function completo(m) {
+    for (var f = 0; f < n; f++) {
+        for (var c = 0; c < n; c++) {
+            if (m[f][c] === 0) {
+                return false;
             }
         }
     }
-    return;
+    return true;
+}
+function randomSinRepetir() {
+    probados = [false, false, false, false, false, false, false, false, false];
+    numeros = [];
+    for (var c = 0; c < 9; c++) {
+        var number = aleatorioEntre(1, 9);
+        while (probados[number - 1]) {
+            number = aleatorioEntre(1, 9);
+        }
+        probados[number - 1]=true;
+        numeros.push(number);
+    }
+    return numeros;
+}
+function vegas(filaAct) {
+    if (completo(matrizInicial)) {
+        renderizar(clonar(matrizInicial));
+        console.table(matrizInicial);
+        return true;
+    } else {
+        for (var fila = filaAct; fila < n; fila++) {
+            for (var col = 0; col < n; col++) {
+                if (matrizInicial[fila][col] === 0) {
+                    aleatorios=randomSinRepetir();
+                    for (var c = 0; c < 9; c++) {
+                        number=aleatorios[c];
+                        if (isValido(number, fila, col)) {
+                            matrizInicial[fila][col] = number;
+                            cantidadNodos++;
+                            if (vegas(fila)) {
+                                return true;
+                            } else {
+                                matrizInicial[fila][col] = 0;
+                            }
+                        }
+                    }
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+
+}
+function backTrack(filaAct) {
+    if (completo(matrizInicial)) {
+        renderizar(clonar(matrizInicial));
+        return true;
+    } else {
+        for (var fila = filaAct; fila < n; fila++) {
+            for (var col = 0; col < n; col++) {
+                if (matrizInicial[fila][col] === 0) {
+                    for (var c = 0; c < 9; c++) {
+                        number = c + 1;
+                        if (isValido(number, fila, col)) {
+                            matrizInicial[fila][col] = number;
+                            cantidadNodos++;
+                            if (backTrack(fila)) {
+                                return true;
+                            } else {
+                                matrizInicial[fila][col] = 0;
+                            }
+                        }
+                    }
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+
 }
 
 function clonar(m) {
@@ -236,10 +300,6 @@ function clonar(m) {
         for (col = 0; col < n; col++) {
             a[fila][col] = m[fila][col]
         }
-    }
-    if(primeraSol){
-        primeraSol = false;
-        renderizar(a);
     }
     return a;
 }
