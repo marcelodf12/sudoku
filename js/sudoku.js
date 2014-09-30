@@ -5,25 +5,55 @@ var vueltas;
 var primeraSol = true;
 var barProg;
 var opciones = [];
-var matrizInicial = [[2, 9, 3, 6, 7, 5, 1, 8, 4],
-    [1, 8, 6, 2, 9, 4, 5, 3, 7],
-    [4, 5, 7, 8, 1, 3, 6, 2, 9],
-    [9, 3, 1, 4, 8, 6, 7, 5, 2],
-    [5, 4, 8, 3, 2, 7, 9, 6, 1],
-    [7, 6, 2, 1, 5, 9, 3, 4, 8],
-    [8, 7, 5, 9, 3, 2, 4, 1, 6],
-    [6, 1, 9, 5, 4, 8, 2, 7, 3],
-    [3, 2, 4, 7, 6, 1, 8, 9, 5]];
+var matrizInicial;
+var matrizSolucion =
+        [
+            [8, 1, 2, 7, 5, 3, 6, 4, 9],
+            [9, 4, 3, 6, 8, 2, 1, 7, 5],
+            [6, 7, 5, 4, 9, 1, 2, 8, 3],
+            [1, 5, 4, 2, 3, 7, 8, 9, 6],
+            [3, 6, 9, 8, 4, 5, 7, 2, 1],
+            [2, 8, 7, 1, 6, 9, 5, 3, 4],
+            [5, 2, 1, 9, 7, 4, 3, 6, 8],
+            [4, 3, 8, 5, 2, 6, 9, 1, 7],
+            [7, 9, 6, 3, 1, 8, 4, 5, 2]
+        ];
+var matrizBase =
+        [
+            [8, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 3, 6, 0, 0, 0, 0, 0],
+            [0, 7, 0, 0, 9, 0, 2, 0, 0],
+            [0, 5, 0, 0, 0, 7, 0, 0, 0],
+            [0, 0, 0, 0, 4, 5, 7, 0, 0],
+            [0, 0, 0, 1, 0, 0, 0, 3, 0],
+            [0, 0, 1, 0, 0, 0, 0, 6, 8],
+            [0, 0, 8, 5, 0, 0, 0, 1, 0],
+            [0, 9, 0, 0, 0, 0, 4, 0, 0]
+        ];
 function inicializarMatriz() {
-    matrizInicial = [[2, 9, 3, 6, 7, 5, 1, 8, 4],
-        [1, 8, 6, 2, 9, 4, 5, 3, 7],
-        [4, 5, 7, 8, 1, 3, 6, 2, 9],
-        [9, 3, 1, 4, 8, 6, 7, 5, 2],
-        [5, 4, 8, 3, 2, 7, 9, 6, 1],
-        [7, 6, 2, 1, 5, 9, 3, 4, 8],
-        [8, 7, 5, 9, 3, 2, 4, 1, 6],
-        [6, 1, 9, 5, 4, 8, 2, 7, 3],
-        [3, 2, 4, 7, 6, 1, 8, 9, 5]];
+    matrizSolucion = [
+        [8, 1, 2, 7, 5, 3, 6, 4, 9],
+        [9, 4, 3, 6, 8, 2, 1, 7, 5],
+        [6, 7, 5, 4, 9, 1, 2, 8, 3],
+        [1, 5, 4, 2, 3, 7, 8, 9, 6],
+        [3, 6, 9, 8, 4, 5, 7, 2, 1],
+        [2, 8, 7, 1, 6, 9, 5, 3, 4],
+        [5, 2, 1, 9, 7, 4, 3, 6, 8],
+        [4, 3, 8, 5, 2, 6, 9, 1, 7],
+        [7, 9, 6, 3, 1, 8, 4, 5, 2]
+    ];
+    matrizBase =
+            [
+                [8, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 3, 6, 0, 0, 0, 0, 0],
+                [0, 7, 0, 0, 9, 0, 2, 0, 0],
+                [0, 5, 0, 0, 0, 7, 0, 0, 0],
+                [0, 0, 0, 0, 4, 5, 7, 0, 0],
+                [0, 0, 0, 1, 0, 0, 0, 3, 0],
+                [0, 0, 1, 0, 0, 0, 0, 6, 8],
+                [0, 0, 8, 5, 0, 0, 0, 1, 0],
+                [0, 9, 0, 0, 0, 0, 4, 0, 0]
+            ];
 }
 var n = 9;
 function imprimirMatriz() {
@@ -32,49 +62,78 @@ function imprimirMatriz() {
     }
 }
 
-function intercambiarFila(fila1, fila2) {
-    var auxiliar = matrizInicial[fila1];
-    matrizInicial[fila1] = matrizInicial[fila2];
-    matrizInicial[fila2] = auxiliar;
+function intercambiarFila(m, fila1, fila2) {
+    var auxiliar = m[fila1];
+    m[fila1] = m[fila2];
+    m[fila2] = auxiliar;
+    return m;
 }
 ;
 
-function intercambiarColumna(col1, col2) {
+function intercambiarColumna(m, col1, col2) {
     var auxiliar;
     for (var i = 0; i < n; i++) {
-        auxiliar = matrizInicial[i][col1];
-        matrizInicial[i][col1] = matrizInicial[i][col2];
-        matrizInicial[i][col2] = auxiliar;
+        auxiliar = m[i][col1];
+        m[i][col1] = m[i][col2];
+        m[i][col2] = auxiliar;
+        return m;
     }
 }
 ;
+function intercambiarNumeros(m, n1, n2) {
+    for (var fila = 0; fila < n; fila++) {
+        for (var col = 0; col < n; col++) {
+            //console.log(fila.toString() + "-" + col.toString());
+            if (m[fila][col] === n1) {
+                m[fila][col] = n2;
+            } else if (m[fila][col] === n2) {
+                m[fila][col] = n1;
+            }
+        }
+    }
+    return m;
+}
 function generarJuego() {
     inicializarMatriz();
     var rand = Math.random();
     var Num1 = Math.round(Math.random() * 2);
     var Num2 = Math.round(Math.random() * 2);
-    intercambiarFila(Num1, Num2);
-    intercambiarColumna(Num1, Num2);
+    matrizBase = intercambiarFila(matrizBase, Num1, Num2);
+    matrizBase = intercambiarColumna(matrizBase, Num1, Num2);
+    matrizSolucion = intercambiarFila(matrizSolucion, Num1, Num2);
+    matrizSolucion = intercambiarColumna(matrizSolucion, Num1, Num2);
     var Num1 = Math.round(Math.random() * 2) + 3;
     var Num2 = Math.round(Math.random() * 2) + 3;
-    intercambiarFila(Num1, Num2);
-    intercambiarColumna(Num1, Num2);
+    matrizBase = intercambiarFila(matrizBase, Num1, Num2);
+    matrizBase = intercambiarColumna(matrizBase, Num1, Num2);
+    matrizSolucion = intercambiarFila(matrizSolucion, Num1, Num2);
+    matrizSolucion = intercambiarColumna(matrizSolucion, Num1, Num2);
     var Num1 = Math.round(Math.random() * 2) + 6;
     var Num2 = Math.round(Math.random() * 2) + 6;
-    intercambiarFila(Num1, Num2);
-    intercambiarColumna(Num1, Num2);
+    matrizBase = intercambiarFila(matrizBase, Num1, Num2);
+    matrizBase = intercambiarColumna(matrizBase, Num1, Num2);
+    matrizSolucion = intercambiarFila(matrizSolucion, Num1, Num2);
+    matrizSolucion = intercambiarColumna(matrizSolucion, Num1, Num2);
+    for (var vueltas = 0; vueltas < 25; vueltas++) {
+        Num1 = aleatorioEntre(1, 9);
+        Num2 = aleatorioEntre(1, 9);
+        if (Num1 !== Num2) {
+            matrizBase = intercambiarNumeros(matrizBase, Num1, Num2);
+            matrizSolucion = intercambiarNumeros(matrizSolucion, Num1, Num2);
+        }
+
+    }
+    matrizInicial = clonar(matrizBase);
 }
 function nuevoJuego() {
     generarJuego();
     var M = parseInt(document.getElementById("inputM").value);
     console.log(M);
-    borrarValores(M);
+    addValores(M);
     renderizar(matrizInicial);
     matrizRescatada = clonar(matrizInicial);
 }
 function reiniciar() {
-    console.table(matrizInicial);
-    console.table(matrizRescatada);
     matrizInicial = clonar(matrizRescatada);
     renderizar(matrizInicial);
 }
@@ -109,19 +168,21 @@ function renderizar(matriz) {
 function aleatorioEntre(MIN, MAX) {
     return Math.floor(Math.random() * (MAX - MIN + 1)) + MIN;
 }
-function borrarValores(max) {
-    if (max < 10) {
-        alert("El numero minimo es 10");
+function addValores(max) {
+    if (max < 25) {
+        alert("El numero minimo es 25");
         max = 10;
-        document.getElementById("inputM").value = 10;
+        document.getElementById("inputM").value = 25;
     }
     var i = 0;
-    while (i < n * n - max) {
+    console.table(matrizInicial);
+    while (i < max - 21) {
         var x = Math.round(Math.random() * (n - 1));
         var y = Math.round(Math.random() * (n - 1));
-        if (matrizInicial[x][y] !== 0) {
-            matrizInicial[x][y] = 0;
+        if (matrizInicial[x][y] === 0 && matrizSolucion[x][y] !== 0) {
+            matrizInicial[x][y] = matrizSolucion[x][y];
             i++;
+            console.log(i.toString() + "en" + x.toString() + "-" + y.toString());
         }
     }
 }
