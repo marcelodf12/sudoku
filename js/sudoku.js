@@ -128,7 +128,6 @@ function generarJuego() {
 function nuevoJuego() {
     generarJuego();
     var M = parseInt(document.getElementById("inputM").value);
-    console.log(M);
     addValores(M);
     renderizar(matrizInicial);
     matrizRescatada = clonar(matrizInicial);
@@ -255,6 +254,7 @@ function resolver(algoritmo) {
         if (backTrack(0)) {
             console.log("EXITO");
         } else {
+            nuevoJuego();
             console.log("FRACASO");
         }
         ;
@@ -263,6 +263,7 @@ function resolver(algoritmo) {
         if (vegas(0)) {
             console.log("EXITO");
         } else {
+            nuevoJuego();
             console.log("FRACASO");
         }
         ;
@@ -272,6 +273,7 @@ function resolver(algoritmo) {
         if (heuristica()) {
             console.log("EXITO");
         } else {
+            nuevoJuego();
             console.log("FRACASO");
         }
         ;
@@ -330,7 +332,6 @@ function vegas(filaAct) {
                 }
             }
         }
-        return false;
     }
 }
 function backTrack(filaAct) {
@@ -357,7 +358,6 @@ function backTrack(filaAct) {
                 }
             }
         }
-        return false;
     }
 
 }
@@ -372,7 +372,6 @@ function heuristica() {
         for (var x = 1; x < 10; x++) {
             if (isValido(x, f, c)) {
                 matrizInicial[f][c] = x;
-                console.table(matrizInicial);
                 iniciarOpciones();
                 cantidadNodos++;
                 if (heuristica()) {
@@ -383,7 +382,7 @@ function heuristica() {
                 }
             }
         }
-        return false;
+        
     }
 }
 function iniciarOpciones() {
